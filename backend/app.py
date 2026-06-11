@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -45,6 +45,57 @@ class Chamado(db.Model):
 @app.route('/api/status', methods=['GET'])
 def verificar_status():
     return jsonify({"mensagem": "API do Sistema de Chamados rodando perfeitamente!"})
+
+@app.route('/api/responsaveis', methods=['GET'])
+def listar_responsaveis():
+    responsaveis = Responsavel.query.all()
+    return jsonify([{"id": r.id, "nome": r.nome} for r in responsaveis])
+
+@app.route('/api/chamados', methods=['GET'])
+def listar_chamados():
+    chamados = Chamado.query.all()
+    return jsonify([c.to_dict() for c in chamados])
+
+@app.route('/api/chamados', methods=['POST'])
+def criar_chamado():
+    dados = request.get_json()
+
+    novo_chamado = Chamado(
+        titulo=dados.get('titulo'),
+        descricao=dados.get('descricao'),
+        prioridade=dados.get('prioridade', 'media'),
+        status='aberto' 
+    )
+
+    tipo_atribuicao = dados.get('tipo_atribuicao') 
+    responsavel_id = dados.get('responsavel_id')
+
+    if tipo_atribuicao == 'manual' and responsavel_id:
+        novo_chamado.responsavel_id = responsavel_id
+        
+    elif tipo_atribuicao == 'automatica':
+        # REGRA DE NEGÓCIO: DISTRIBUIÇÃO AUTOMÁTICA
+        responsaveis = Responsavel.query.all()
+        responsavel_escolhido = None
+        menor_quantidade = float('inf') 
+
+        for resp in responsaveis:
+            qtd_em_aberto = Chamado.query.filter(
+                Chamado.responsavel_id == resp.id,
+                Chamado.status.in_(['aberto', 'em andamento'])
+            ).count()
+
+            if qtd_em_aberto < menor_quantidade:
+                menor_quantidade = qtd_em_aberto
+                responsavel_escolhido = resp
+
+        if responsavel_escolhido:
+            novo_chamado.responsavel_id = responsavel_escolhido.id
+
+    db.session.add(novo_chamado)
+    db.session.commit()
+
+    return jsonify(novo_chamado.to_dict()), 201
 
 # CONFIGURAÇÃO INICIAL 
 
