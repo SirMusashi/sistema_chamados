@@ -24,7 +24,7 @@ O escopo do desafio enfatiza a importância da **produtividade em times pequenos
 Para demonstrar a evolução e o funcionamento do sistema, documentei as etapas de desenvolvimento e as telas da aplicação:
 
 ### Estrutura de pastas:
-![Estrutura de pastas](./imagens/01%20estrutura%20de%20pastas.png)
+![Estrutura de pastas](./imagens/01_estrutura_de_pastas.png)
 
 ### Como executar o projeto localmente (Item 6.1 e 6.2)
 
@@ -32,6 +32,25 @@ Pensando na facilidade de execução por qualquer membro da equipe, o projeto fo
 
 ### Pré-requisitos
 * [Docker](https://www.docker.com/) , [Rancher desktop](https://rancherdesktop.io/) ou algum outro **orquestrador de conteiner** instalado e rodando em sua máquina.
+
+### Passo 2: Configuração do Backend e Testes Iniciais
+
+Nesta etapa, o ambiente básico do backend foi estruturado utilizando o Flask. Visando a qualidade e estabilidade do código desde o primeiro momento, também foi configurada a infraestrutura de testes automatizados com o `pytest` dentro do container Docker.
+
+####  Execução dos Testes Automatizados
+Foi criado um teste automatizado básico para validar a rota de status da API. Ao executar os testes de dentro do container com o comando: 
+```Bash
+  docker-compose exec api_chamados pytest
+```
+   
+  A suite respondeu com sucesso:
+
+![Testes automatizados com Pytest passando com sucesso](./imagens/02_teste_pytest_sucesso.png)
+
+####  Validação da API no Navegador
+Com o container Docker em execução, a rota de status da API (`/api/status`) foi testada diretamente no navegador, confirmando que o "motor" do nosso sistema está respondendo corretamente em formato JSON:
+
+![Retorno JSON da rota de status da API no navegador](./imagens/03_api_status_localhost.png)
 
 ### Passos para execução
 1. Clone este repositório:
