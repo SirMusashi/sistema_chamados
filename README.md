@@ -26,5 +26,28 @@ Para demonstrar a evolução e o funcionamento do sistema, documentei as etapas 
 ### Estrutura de pastas:
 ![Estrutura de pastas](./imagens/01%20estrutura%20de%20pastas.png)
 
+### Como executar o projeto localmente (Item 6.1 e 6.2)
+
+Pensando na facilidade de execução por qualquer membro da equipe, o projeto foi totalmente conteinerizado.
+
+### Pré-requisitos
+* [Docker](https://www.docker.com/) , [Rancher desktop](https://rancherdesktop.io/) ou algum outro **orquestrador de conteiner** instalado e rodando em sua máquina.
+
+### Passos para execução
+1. Clone este repositório:
+   ```bash
+   git clone [https://github.com/SirMusashi/sistema_chamados.git](https://github.com/SirMusashi/sistema_chamados.git)
+   ```
+
+2. Acesse a pasta do projeto:
+   ```bash
+   cd sistema_chamados
+   ```
+3. Suba os containers da aplicação:
+   ```bash
+   docker-compose up --build
+   ```
+
+4. A API estará disponível no endereço: http://localhost:5000 
 ---
 Desenvolvido por Bruno Duarte para o processo seletivo da Codificar.
