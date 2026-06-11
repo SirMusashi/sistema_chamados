@@ -8,7 +8,7 @@ O objetivo deste projeto é construir a primeira versão de um sistema para orga
 
 ##  Justificativa de Arquitetura e Escolhas Tecnológicas (Item 1.2)
 
-O escopo do desafio enfatiza a importância da **produtividade em times pequenos**, **redução de atrito** e **facilidade de execução local** por qualquer membro do time. Pensando nisso, estruturei a solução com as seguintes tecnologias:
+O escopo do desafio enfatiza a importância da **produtividade em times pequenos**, **redução de atrito** e **facilidade de execução local** por qualquer membro do time. Pensei em uma solução com as seguintes tecnologias:
 
 * **Backend: Python com Flask**
   * **Por quê?** Python oferece uma sintaxe limpa e alta produtividade. O Flask, sendo um microframework, é leve, direto ao ponto e perfeito para construir APIs RESTful rápidas e eficientes sem a sobrecarga de ferramentas que não seriam utilizadas neste escopo inicial.
@@ -26,16 +26,16 @@ Para demonstrar a evolução e o funcionamento do sistema, documentei as etapas 
 ### Estrutura de pastas:
 ![Estrutura de pastas](./imagens/01_estrutura_de_pastas.png)
 
-### Como executar o projeto localmente (Item 6.1 e 6.2)
+### Como executar o projeto localmente 
 
 Pensando na facilidade de execução por qualquer membro da equipe, o projeto foi totalmente conteinerizado.
 
 ### Pré-requisitos
 * [Docker](https://www.docker.com/) , [Rancher desktop](https://rancherdesktop.io/) ou algum outro **orquestrador de conteiner** instalado e rodando em sua máquina.
 
-### Passo 2: Configuração do Backend e Testes Iniciais
+### Configuração do Backend e Testes Iniciais
 
-Nesta etapa, o ambiente básico do backend foi estruturado utilizando o Flask. Visando a qualidade e estabilidade do código desde o primeiro momento, também foi configurada a infraestrutura de testes automatizados com o `pytest` dentro do container Docker.
+Nesta etapa, o ambiente básico do backend foi estruturado utilizando o Flask. Visando a qualidade e estabilidade do código, também foi configurada a infraestrutura de testes automatizados com o `pytest` dentro do container Docker.
 
 ####  Execução dos Testes Automatizados
 Foi criado um teste automatizado básico para validar a rota de status da API. Ao executar os testes de dentro do container com o comando: 
@@ -52,10 +52,18 @@ Com o container Docker em execução, a rota de status da API (`/api/status`) fo
 
 ![Retorno JSON da rota de status da API no navegador](./imagens/03_api_status_localhost.png)
 
-### Passos para execução
+## Regras de Negócio e Decisões 
+
+### Definição de Chamados "Em Aberto"
+Para o algoritmo de **Distribuição Automática**, foi necessário definir o que constitui um chamado "em aberto" para calcular a carga de trabalho de cada responsável.
+
+**Decisão:** Apenas chamados com os status `aberto` e `em andamento` são contabilizados na carga de trabalho.
+Porque no dia a dia de uma equipe de suporte, um chamado `resolvido` (aguardando validação do usuário) ou `fechado` não exige mais esforço ativo do técnico. Contabilizar esses status finalizados faria com que bons profissionais que resolvem muitos chamados fossem punidos recebendo menos chamados novos, desequilibrando a produtividade real da equipe.
+
+## Passos para execução
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/SirMusashi/sistema_chamados.git](https://github.com/SirMusashi/sistema_chamados.git)
+   git clone https://github.com/SirMusashi/sistema_chamados.git
    ```
 
 2. Acesse a pasta do projeto:
