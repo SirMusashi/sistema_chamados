@@ -16,6 +16,6 @@ services:
       - "8080:8080"
     volumes:
       - ./frontend:/app
-      - /app/node_modules # Impede que o volume local apague os módulos do container
+      - /app/node_modules 
     depends_on:
       - api_chamados

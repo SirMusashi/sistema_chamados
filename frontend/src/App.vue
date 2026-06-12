@@ -1,12 +1,35 @@
 <template>
-  <div class="container mx-auto p-8">
-    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-      <h1 class="text-3xl font-bold text-blue-600 mb-4">Sistema de Controle de Chamados</h1>
-      <p class="text-gray-600 text-lg">O frontend em Vue.js está vivo e rodando!</p>
+  <div class="min-h-screen bg-gray-100 py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <header class="mb-8 text-center">
+        <h1 class="text-3xl font-extrabold text-blue-800">Sistema Interno de Suporte</h1>
+        <p class="text-gray-600 mt-2">Central de atendimento e distribuição de demandas</p>
+      </header>
+      
+      <FormularioChamado @chamadoCriado="carregarChamados" />
+      <ListaChamados :chamados="chamados" />
     </div>
   </div>
 </template>
 
 <script setup>
-// Em breve, vamos colocar o código para buscar os chamados da API aqui
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import FormularioChamado from './components/FormularioChamado.vue';
+import ListaChamados from './components/ListaChamados.vue';
+
+const chamados = ref([]);
+
+const carregarChamados = async () => {
+  try {
+    const resposta = await axios.get('http://localhost:5000/api/chamados');
+    
+    chamados.value = resposta.data.reverse();
+  } catch (erro) {
+    console.error("Erro ao buscar chamados:", erro);
+  }
+};
+
+
+onMounted(carregarChamados);
 </script>
