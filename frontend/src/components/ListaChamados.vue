@@ -18,11 +18,23 @@
     
     <div class="grid gap-4">
       <div v-for="chamado in chamadosFiltrados" :key="chamado.id" class="border border-gray-200 rounded p-4 hover:bg-gray-50 transition">
-        <div class="flex justify-between items-start mb-2">
+        <div class="flex flex-col md:flex-row justify-between items-start mb-2 gap-2">
           <h3 class="font-bold text-lg text-gray-800">#{{ chamado.id }} - {{ chamado.titulo }}</h3>
-          <span :class="corStatus(chamado.status)" class="px-3 py-1 text-xs font-bold rounded-full text-white uppercase tracking-wide">
-            {{ chamado.status }}
-          </span>
+          
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-500 font-semibold">Status:</span>
+            <select 
+              v-model="chamado.status" 
+              @change="atualizarStatus(chamado)"
+              :class="corStatus(chamado.status)" 
+              class="px-2 py-1 text-xs font-bold rounded text-white uppercase tracking-wide border-none cursor-pointer outline-none"
+            >
+              <option value="aberto" class="bg-white text-gray-800">ABERTO</option>
+              <option value="em andamento" class="bg-white text-gray-800">EM ANDAMENTO</option>
+              <option value="resolvido" class="bg-white text-gray-800">RESOLVIDO</option>
+              <option value="fechado" class="bg-white text-gray-800">FECHADO</option>
+            </select>
+          </div>
         </div>
         
         <p class="text-gray-600 mb-4">{{ chamado.descricao }}</p>
@@ -39,6 +51,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
   chamados: Array
@@ -53,10 +66,10 @@ const chamadosFiltrados = computed(() => {
 
 const corStatus = (status) => {
   const cores = {
-    'aberto': 'bg-yellow-500',
-    'em andamento': 'bg-blue-500',
-    'resolvido': 'bg-green-500',
-    'fechado': 'bg-gray-600'
+    'aberto': 'bg-yellow-500 hover:bg-yellow-600',
+    'em andamento': 'bg-blue-500 hover:bg-blue-600',
+    'resolvido': 'bg-green-500 hover:bg-green-600',
+    'fechado': 'bg-gray-600 hover:bg-gray-700'
   };
   return cores[status] || 'bg-gray-400';
 };
@@ -65,5 +78,19 @@ const formatarData = (dataString) => {
   if (!dataString) return '';
   const data = new Date(dataString);
   return data.toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+};
+
+// Função que avisa o Backend quando mudamos o status na tela
+const atualizarStatus = async (chamado) => {
+  try {
+    await axios.put(`http://localhost:5000/api/chamados/${chamado.id}`, {
+      status: chamado.status
+    });
+    // Opcional: mostrar um alerta visual mais discreto
+    console.log(`Chamado ${chamado.id} atualizado para ${chamado.status}`);
+  } catch (erro) {
+    console.error("Erro ao atualizar chamado:", erro);
+    alert("Erro ao salvar o novo status.");
+  }
 };
 </script>

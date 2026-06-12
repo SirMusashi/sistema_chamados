@@ -97,6 +97,21 @@ def criar_chamado():
 
     return jsonify(novo_chamado.to_dict()), 201
 
+@app.route('/api/chamados/<int:id>', methods=['PUT'])
+def atualizar_chamado(id):
+    """Atualiza um chamado existente (Item 2.1), principalmente o status"""
+    chamado = Chamado.query.get_or_404(id)
+    dados = request.get_json()
+
+    if 'status' in dados:
+        chamado.status = dados['status']
+    
+    if 'prioridade' in dados:
+        chamado.prioridade = dados['prioridade']
+
+    db.session.commit()
+    return jsonify(chamado.to_dict()), 200
+
 # CONFIGURAÇÃO INICIAL 
 
 def inicializar_banco():
